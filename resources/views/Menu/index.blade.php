@@ -1,50 +1,4 @@
-<?php
-
-use Foodboard\Config;
-
-require_once __DIR__ . '/Config/Config.php';
-
-?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<meta name="description" content="Food order wizard with online payment">
-	<meta name="author" content="UWS">
-	<title>Zhafira kantin</title>
-
-	<!-- Favicon -->
-	<link href="<?php echo e(asset('img/logo Zhafira.jpg')); ?>" rel="shortcut icon">
-
-	<!-- Google Fonts - Jost -->
-	<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-	<!-- Font Awesome CSS -->
-	<link href="<?php echo e(asset('vendor/font-awesome/css/font-awesome.min.css')); ?>" rel="stylesheet">
-
-	<!-- Custom Font Icons -->
-	<link href="<?php echo e(asset('vendor/icomoon/css/iconfont.min.css')); ?>" rel="stylesheet">
-
-	<!-- Vendor CSS -->
-	<link href="<?php echo e(asset('vendor/bootstrap/css/bootstrap.min.css')); ?>" rel="stylesheet">
-	<link href="<?php echo e(asset('vendor/dmenu/css/menu.css')); ?>" rel="stylesheet">
-	<link href="<?php echo e(asset('vendor/hamburgers/css/hamburgers.min.css')); ?>" rel="stylesheet">
-	<link href="<?php echo e(asset('vendor/mmenu/css/mmenu.min.css')); ?>" rel="stylesheet">
-	<link href="<?php echo e(asset('vendor/magnific-popup/css/magnific-popup.css')); ?>" rel="stylesheet">
-	<link href="<?php echo e(asset('vendor/float-labels/css/float-labels.min.css')); ?>" rel="stylesheet">
-
-	<!-- Main CSS -->
-	<link href="<?php echo e(asset('css/style.css')); ?>" rel="stylesheet">
-
-</head>
-
-<body>
-
-	<?php echo $__env->make('components.header', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+	@include('components.header')
 		<!-- Main -->
 		<main>
 			<!-- Order -->
@@ -83,7 +37,7 @@ require_once __DIR__ . '/Config/Config.php';
 								<div id="gridItem01" class="col-xl-6 col-lg-6 col-md-6 col-sm-6 isotope-item pizza">
 									<div class="item-body">
 										<figure>
-											<img src="<?php echo e(asset('')); ?>img/bg/lazy-placeholder.jpg" data-src="<?php echo e(asset('')); ?>img/gallery/grid-items/01.jpg" class="img-fluid lazy" alt="">
+											<img src="{{ asset('') }}img/bg/lazy-placeholder.jpg" data-src="{{ asset('') }}img/gallery/grid-items/01.jpg" class="img-fluid lazy" alt="">
 											<a href="#modalDetailsItem01" class="item-body-link modal-opener">
 												<div class="item-title">
 													<h3>Aspen</h3>
@@ -110,7 +64,7 @@ require_once __DIR__ . '/Config/Config.php';
 									<div class="item-body">
 										<figure>
 											<div class="ribbon-discount"><span>- 10%</span></div>
-											<img src="<?php echo e(asset('')); ?>img/bg/lazy-placeholder.jpg" data-src="<?php echo e(asset('')); ?>img/gallery/grid-items/02.jpg" class="img-fluid lazy" alt="">
+											<img src="{{ asset('') }}img/bg/lazy-placeholder.jpg" data-src="{{ asset('') }}img/gallery/grid-items/02.jpg" class="img-fluid lazy" alt="">
 											<a href="#modalDetailsItem02" class="item-body-link modal-opener">
 												<div class="item-title">
 													<h3>Bolognese</h3>
@@ -140,7 +94,7 @@ require_once __DIR__ . '/Config/Config.php';
 						</div>
 						<!-- Left Sidebar End -->
 						
-						<?php echo $__env->make('components.cart', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+						@include('components.cart')
 						<div class="row">
 							<div class="col-md-12">
 								<button type="button" name="backward" class="btn-form-func btn-form-func-alt-color backward">
@@ -164,4 +118,4 @@ require_once __DIR__ . '/Config/Config.php';
 		</main>
 		<!-- Main End -->
 		
-	<?php echo $__env->make('components.footer', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\Project\zhafira_order\resources\views/customers/index.blade.php ENDPATH**/ ?>
+	@include('components.footer')

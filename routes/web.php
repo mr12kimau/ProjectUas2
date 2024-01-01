@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\MenuController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,4 +21,6 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/index', [App\Http\Controllers\CustomerController::class, 'index'])->name('index');
+Route::get('/index', [App\Http\Controllers\MenuController::class, 'index'])->name('index');
+
+Route::resource('menu', MenuController::class);
