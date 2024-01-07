@@ -43,9 +43,9 @@
 	<!-- Modal Warning Qty max. Limit End -->
 
 	<!-- Modal Options for Item 01 -->
-	<div id="modalOptionsItem01" class="modal-popup zoom-anim-dialog mfp-hide">
+	<div id="modalOptionsItem{{ $item->id }}" class="modal-popup zoom-anim-dialog mfp-hide">
 		<div class="small-dialog-header">
-			<h3>Aspen</h3>
+			<h3>{{ $item['name'] }}</h3>
 			<div class="addedToCartMsgInModal">Added to cart</div>
 			<div class="alreadyInCartMsgInModal">Already in cart</div>
 		</div>
@@ -110,7 +110,7 @@
 	<!-- Modal Options for Item 02 -->
 	<div id="modalOptionsItem02" class="modal-popup zoom-anim-dialog mfp-hide">
 		<div class="small-dialog-header">
-			<h3>Bolognese</h3>
+			<h3>ds</h3>
 			<div class="addedToCartMsgInModal">Added to cart</div>
 			<div class="alreadyInCartMsgInModal">Already in cart</div>
 		</div>

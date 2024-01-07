@@ -27,7 +27,7 @@
 											<!-- Total -->
 											<div class="row total-container">
 												<div class="col-md-12 p-0">
-													<span class="totalTitle">Total</span><span class="totalValue format-price float-right">0.00</span>
+													<span class="totalTitle">Total</span><span class="totalValue format-price float-right">0</span>
 													<input type="hidden" id="totalOrderSummary" class="total format-price" name="total" value="" data-parsley-errors-container="#totalError" data-parsley-empty-order="" disabled />
 												</div>
 											</div>

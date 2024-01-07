@@ -338,20 +338,20 @@
 	// Function to format item prices usign priceFormat plugin
 	function formatPrice() {
 		$('.format-price').priceFormat({
-			prefix: '$ ',
-			centsSeparator: '.',
-			thousandsSeparator: ','
+			prefix: 'Rp ',
+			centsSeparator: ',',
+			thousandsSeparator: '.',
+			centsLimit: 0  // This sets the limit to 0, effectively removing cents
 		});
 	}
 
 	// Function to reset total price
 	function resetTotal() {
-
 		$('.totalTitle').val('Total');
-		$('.total').val('0.00');
-		formatPrice();
-
+		$('.total').val('0');  // Set the initial total value to '0'
+		formatPrice();         // Format the price to Rupiah
 	}
+
 
 	// Function to call warning popup
 	function callWarningPopup(popupId) {
@@ -461,44 +461,47 @@
 		subSum = (itemPrice * 1) * (actualQty * 1);
 
 		// Update subSum
-		$('#cartItem' + id + rowId + ' .order-list-details .order-list-price').text(subSum.toFixed(2));
+		$('#cartItem' + id + rowId + ' .order-list-details .order-list-price').text(subSum);
 	}
 
 	// Function to update total summary
 	function updateTotal() {
-
-		total = 0;
+		var total = 0;
 
 		// Update total with prices in order list
 		$('.order-list-price').each(function () {
-
-			total += ($(this).text().match(/[0-9.]+/g) * 1);
-
+			var priceText = $(this).text().replace('Rp ', '').replace(/\./g, '').replace(/,/g, '.');
+			var price = parseFloat(priceText);
+			if (!isNaN(price)) { // Ensure that price is a valid number
+				total += price;
+			}
 		});
 
-		// Set total
-		$('.total').val(total.toFixed(2));
-		$('.totalValue').text(total.toFixed(2));
+		// Round the total to the nearest integer
+		total = Math.round(total);
 
-		// If cart is empty do not calculate any cost
-		if ($('ul#itemList li#emptyCart').length > 0) {
+		// Set total without using .toFixed()
+		$('.total').val('Rp ' + total);
+		$('.totalValue').text('Rp ' + total);
+
+		// If cart is empty, do not calculate any cost
+		if ($('ul#itemList li').length === 0) {
 			total = 0;
-			$('.total').val(total.toFixed(2));
-			$('.totalValue').text(total.toFixed(2));
+			$('.total').val('Rp 0');
+			$('.totalValue').text('Rp 0');
+		} else {
+			// Call formatPrice to ensure consistent formatting
+			formatPrice();
 		}
-
-		formatPrice();
-
 	}
 
-	// Function to insert item into its dedicated cart row based on: id, rowId, itemSubtitle, thumbnailPath, itemTitle, extraTitle, itemPrice
-	function insertItemIntoCartRow(id, rowId, itemSubtitle, thumbnailPath, itemTitle, extraTitle, itemPrice) {
+	// Fungsi yang dimodifikasi untuk memasukkan item ke dalam baris keranjang belanja
+	function insertItemIntoCartRow(id, itemTitle, itemPrice, itemTemperature, itemImage, itemDescription) {
+		// Membuat baris baru di keranjang
+		$('#itemList').append('<li id="cartItem' + id + '"></li>');
 
-		// Create the dedicated row for the cart element
-		$('#itemList').append('<li id="cartItem' + id + rowId + '"></li>');
-
-		// Insert item into its dedicated row in the cart
-		$('#cartItem' + id + rowId).html('<div class="order-list-img"><img src="' + thumbnailPath + '" alt=""></div><div class="order-list-details"><h4>' + itemTitle + '<br/> <small>' + itemSubtitle + extraTitle + '</small> </h4> <div class="qty-buttons"> <input type="button" value="+" class="qtyplus" name="plus"> <input type="text" name="qty" value="1" class="qty form-control"> <input type="button" value="-" class="qtyminus" name="minus"> </div><div class="order-list-price format-price">' + itemPrice.toFixed(2) + '</div><div class="order-list-delete"><a href="javascript:;" id="deleteCartItem' + id + rowId + '"><i class="icon icon-trash"></i></a></div></div>');
+		// Memasukkan item ke dalam baris baru tersebut
+		$('#cartItem' + id).html('<div class="order-list-img"><img src="' + itemImage + '" alt=""></div><div class="order-list-details"><h4>' + itemTitle + '<br/> <small>Suhu: ' + itemTemperature + '</small> <br/><small>' + itemDescription + '</small></h4> <div class="qty-buttons"> <input type="button" value="+" class="qtyplus" name="plus"> <input type="text" name="qty" value="1" class="qty form-control"> <input type="button" value="-" class="qtyminus" name="minus"> </div><div class="order-list-price format-price">Rp ' + itemPrice + '</div><div class="order-list-delete"><a href="javascript:;" id="deleteCartItem' + id + '"><i class="icon icon-trash"></i></a></div></div>');
 
 		// Handle if an added item will be deleted
 		$('#deleteCartItem' + id + rowId).on('click', function () {
@@ -632,162 +635,65 @@
 
 	}
 
-	// Function to add item into cart
+	// Fungsi untuk menambahkan item ke keranjang dengan opsi tambahan
 	function addOptionsItemToCart(id) {
 
-		// Remove empty cart image and notifications
+		// Menghapus gambar keranjang kosong dan notifikasi
 		$('#emptyCart').remove();
 
-		// Collect item data
-		size = $('input[name="size-options-item-' + id + '"]:checked').val();
+		// Mengumpulkan data item
+		var productElement = $('#gridItem' + id);
+		var itemTitle = productElement.find('.item-title h3').text();
+		var itemPrice = productElement.find('.item-price').text().replace('Rp ', '');
+		itemPrice = itemPrice.replace(/[.,]/g, ''); // Menghapus pemisah ribuan dan konversi ke angka
+		itemPrice = parseFloat(itemPrice);
+		var itemTemperature = productElement.find('.ribbon-size span').text().replace('Suhu: ', '');
+		var itemImage = productElement.find('figure img').attr('src');
+		var itemDescription = ''; // Tambahkan logika untuk mengekstrak deskripsi jika tersedia
 
-		itemTitle = $('#gridItem' + id + ' .item-title h3').text();
-		itemPrice = $('input[name="size-options-item-' + id + '"]:checked').nextAll('.option-price').text();
-		itemPrice = (itemPrice.match(/[0-9.]+/g)) * 1; // Find digits, dot and convert to number
+		// Mengambil data opsi tambahan (jika ada)
+		var extraIsChecked = $('#item' + id + 'Extra').is(':checked');
+		var extraTitle = extraIsChecked ? $('#item' + id + 'ExtraTitle').val() : '';
+		var extraPrice = extraIsChecked ? ($('#item' + id + 'Extra').val()) * 1 : 0; // Mengonversi ke angka
 
-		extraIsChecked = $('#item' + id + 'Extra').is(':checked');
-		extraTitle = $('#item' + id + 'ExtraTitle').val();
-		extraPrice = ($('#item' + id + 'Extra').val()) * 1; // Find digits, dot and convert to number
+		// Menghitung harga total dengan opsi tambahan
+		var totalItemPrice = itemPrice + extraPrice;
 
-		thumbnailPath = '../img/gallery/grid-items-small/' + id + '.jpg';
-
-		// Capture row where the item will be inserted
-		if (size == 'Small: 26cm') {
-
-			// If extra is NOT checked
-			if (!extraIsChecked) {
-
-				rowId = 'S';
-				extraTitle = '';
-
-				// Check if item already exists in cart or not
-				if ($('#cartItem' + id + rowId).length > 0) {
-
-					showItemAlreadyInCartMessage();
-
-				} else { // If not: put it into the cart
-
-					insertItemIntoCartRow(id, rowId, size, thumbnailPath, itemTitle, extraTitle, itemPrice);
-
-				}
-
-			} else if (extraIsChecked) { // If extra is checked
-
-				rowId = 'SExtra';
-				extraTitle = ', ' + extraTitle;
-				itemPrice += extraPrice;
-
-				// Check if extra item already exists in cart or not
-				if ($('#cartItem' + id + rowId).length > 0) {
-
-					showItemAlreadyInCartMessage();
-
-				} else { // If not: put it into the cart
-
-					insertItemIntoCartRow(id, rowId, size, thumbnailPath, itemTitle, extraTitle, itemPrice);
-				}
-			}
-		}
-		if (size == 'Medium: 32cm') {
-
-			// If extra is NOT checked
-			if (!extraIsChecked) {
-
-				rowId = 'M';
-				extraTitle = '';
-
-				// Check if item already exists in cart or not
-				if ($('#cartItem' + id + rowId).length > 0) {
-
-					showItemAlreadyInCartMessage();
-
-				} else { // If not: put it into the cart
-
-					insertItemIntoCartRow(id, rowId, size, thumbnailPath, itemTitle, extraTitle, itemPrice);
-				}
-
-			} else if (extraIsChecked) { // If extra is checked
-
-				rowId = 'MExtra';
-				extraTitle = ', ' + extraTitle;
-				itemPrice += extraPrice;
-
-				// Check if extra item already exists in cart or not
-				if ($('#cartItem' + id + rowId).length > 0) {
-
-					showItemAlreadyInCartMessage();
-
-				} else { // If not: put it into the cart
-
-					insertItemIntoCartRow(id, rowId, size, thumbnailPath, itemTitle, extraTitle, itemPrice);
-				}
-			}
-		}
-		if (size == 'Large: 45cm') {
-
-			// If extra is NOT checked
-			if (!extraIsChecked) {
-
-				rowId = 'L';
-				extraTitle = '';
-
-				// Check if item already exists in cart or not
-				if ($('#cartItem' + id + rowId).length > 0) {
-
-					showItemAlreadyInCartMessage();
-
-				} else { // If not: put it into the cart
-
-					insertItemIntoCartRow(id, rowId, size, thumbnailPath, itemTitle, extraTitle, itemPrice);
-				}
-
-			} else if (extraIsChecked) { // If extra is checked
-
-				rowId = 'LExtra';
-				extraTitle = ', ' + extraTitle;
-				itemPrice += extraPrice;
-
-				// Check if extra item already exists in cart or not
-				if ($('#cartItem' + id + rowId).length > 0) {
-
-					showItemAlreadyInCartMessage();
-
-				} else { // If not: put it into the cart
-
-					insertItemIntoCartRow(id, rowId, size, thumbnailPath, itemTitle, extraTitle, itemPrice);
-				}
-			}
+		// Mengecek apakah item sudah ada di keranjang
+		if ($('#cartItem' + id).length > 0) {
+			showItemAlreadyInCartMessage();
+		} else {
+			// Jika belum ada, tambahkan ke keranjang
+			insertItemIntoCartRow(id, itemTitle, totalItemPrice, itemTemperature, itemImage, itemDescription + extraTitle);
 		}
 	}
 
 	// Function to add item into cart
 	function addItemToCart(id) {
-
-		// Remove empty cart image and notifications
+		// Menghapus gambar keranjang kosong dan notifikasi
 		$('#emptyCart').remove();
 
-		// Collect and set item data
-		rowId = '';
-		extraTitle = '';
-		description = $('#gridItem' + id + ' .item-title small').text();
+		// Mengumpulkan dan mengatur data item
+		var productElement = $('#gridItem' + id);
+		var itemTitle = productElement.find('.item-title h3').text();
+		var itemPriceText = productElement.find('.item-price').text();
+		// Menghapus "Rp " dan pemisah ribuan
+		var itemPrice = itemPriceText.replace('Rp ', '').replace(/\./g, '');
+		// Mengganti koma dengan titik untuk desimal dan mengonversi ke floating point number
+		itemPrice = parseFloat(itemPrice.replace(',', '.'));
+		var itemTemperature = productElement.find('.ribbon-size span').text().replace('Suhu: ', '');
+		var itemImage = productElement.find('figure img').attr('src');
+		var itemDescription = ''; // Tambahkan logika untuk mengekstrak deskripsi jika tersedia
 
-		itemTitle = $('#gridItem' + id + ' .item-title h3').text();
-		itemPrice = $('#gridItem' + id + ' .item-price').text();
-		itemPrice = (itemPrice.match(/[0-9.]+/g)) * 1; // Find digits, dot and convert to number
-
-		thumbnailPath = '../img/gallery/grid-items-small/' + id + '.jpg';
-
-		// Check if item already exists in cart or not
-		if ($('#cartItem' + id + rowId).length > 0) {
-
+		// Mengecek apakah item sudah ada di keranjang atau tidak
+		if ($('#cartItem' + id).length > 0) {
 			showItemAlreadyInCartMessage();
-
-		} else { // If not: put it into the cart
-
-			insertItemIntoCartRow(id, rowId, description, thumbnailPath, itemTitle, extraTitle, itemPrice);
-
+		} else { 
+			// Jika belum: masukkan ke keranjang
+			insertItemIntoCartRow(id, itemTitle, itemPrice, itemTemperature, itemImage, itemDescription);
 		}
 	}
+
 
 	// Item having options is added to cart
 	$('.add-options-item-to-cart').on('click', function () {
