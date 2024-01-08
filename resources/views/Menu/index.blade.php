@@ -1,4 +1,34 @@
 	@include('components.header')
+	
+	@if(session('success'))
+<div class="alert alert-success light-mode">
+    <div class="flex items-center space-x-3 rtl:space-x-reverse">
+        <iconify-icon class="text-2xl flex-0" icon="system-uicons:target"></iconify-icon>
+        <p class="flex-1 font-Inter">{{ session('success') }}</p>
+        <div class="flex-0 text-xl cursor-pointer">
+            <button>
+                <iconify-icon icon="line-md:close" class="relative top-[2px] " id="close">
+                </iconify-icon>
+            </button>
+        </div>
+    </div>
+</div>
+@endif
+
+@if(session('error'))
+<div class="alert alert-danger light-mode">
+    <div class="flex items-center space-x-3 rtl:space-x-reverse">
+        <iconify-icon class="text-2xl flex-0" icon="system-uicons:target"></iconify-icon>
+        <p class="flex-1 font-Inter">{{ session('error') }}</p>
+        <div class="flex-0 text-xl cursor-pointer">
+            <button>
+                <iconify-icon icon="line-md:close" class="relative top-[2px] " id="close">
+                </iconify-icon>
+            </button>
+        </div>
+    </div>
+</div>
+@endif
 		<!-- Main -->
 		<main>
 			<!-- Order -->

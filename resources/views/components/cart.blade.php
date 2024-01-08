@@ -65,23 +65,15 @@
 												<div class="row">
 													<div class="col-md-12">
 														<div class="form-group">
-															<label for="phoneCashPayment">Phone +12345</label>
+															<label for="phoneCashPayment">No HP</label>
 															<input id="phoneCashPayment" class="form-control" name="phone" type="text" data-parsley-pattern="^\+{1}[0-9]+$" required />
-														</div>
-													</div>
-												</div>
-												<div class="row">
-													<div class="col-md-12">
-														<div class="form-group">
-															<label for="emailCashPayment">Email</label>
-															<input id="emailCashPayment" class="form-control" name="email" type="email" required />
 														</div>
 													</div>
 												</div>
 												<div class="row">
 													<div class="col-md-12 col-sm-6">
 														<div class="form-group">
-															<label for="addressCashPayment">Delivery Address</label>
+															<label for="addressCashPayment">Antar Ke</label>
 															<input id="addressCashPayment" class="form-control" name="address" type="text" data-parsley-pattern="^[,.a-zA-Z0-9\s.]+$" required />
 														</div>
 													</div>
@@ -89,7 +81,7 @@
 												<div class="row">
 													<div class="col-md-12">
 														<div class="form-group">
-															<label for="messageCashPayment">Message</label>
+															<label for="messageCashPayment">Catatan</label>
 															<input id="messageCashPayment" class="form-control" name="message" type="text" data-parsley-pattern="^[a-zA-Z0-9\s.:,!?']+$" />
 														</div>
 													</div>
